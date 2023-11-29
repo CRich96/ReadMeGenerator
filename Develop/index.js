@@ -1,105 +1,87 @@
-// TODO: Include packages needed for this application
+// Declaring the dependencies and variables
+const fs = require("fs");
+const util = require("util");
 const inquirer = require("inquirer");
-const fs = require('fs');
-// TODO: Create an array of questions for user input
-const questions = [
-    // Question for the Title
-    {
-        type: "input",
-        name: "title",
-        message: "What is the title of your project?",
-        //validate an input here
-    },
-    // Question for the project Description
-    {
-        type: "input",
-        name: "description",
-        message: "Please enter a description for your project.",
-        //validate an input here
-    },
+const generateMarkdown = require("./utils/generateMarkdown")
+const writeFileAsync = util.promisify(fs.writeFile);
 
-    // Table of Contents
-    // not 100% sure how I will do this
-
-
-    // Question for Installation
-    {
-        type: "input",
-        name: "installation",
-        message: "Please enter an explanation how to install the software, or commands for the program.",
-        //validate an input here
-    },
-
-    // Question for Usage
-    {
-        type: "input",
-        name: "usage",
-        message: "Please enter a description for your project.",
-        //validate an input here
-    },
-
-    // Question for License 
-    {
-        type: "list",
-        name: "description",
-        message: "Please select a license for this project.",
-        choices: [
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ],
-        //validate an input here
-    },
-
-    // Question for Contributing 
-    {
-        type: "input",
-        name: "contributing",
-        message: "Please instruct how users can contribute to your project.",
-        //validate an input here
-    },
-
-    // Question for Tests
-    {
-        type: "input",
-        name: "tests",
-        message: "Please enter any testing instructions you would like to provide for this project.",
-        //validate an input here
-    },
-
-    // QUESTIONS section -- github 
-    {
-        type: "input",
-        name: "userName",
-        message: "What is your GitHub username?",
-        //validate an input here
-    },
-
-    // QUESTIONS section -- email address
-    {
-        type: "input",
-        name: "userEmail",
-        message: "What is your GitHub email address that contributors may contact?",
-        validate: function (value) {
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-                return true;
-            } else {
-                return "Not a valid email address. Please enter a valid email address.";
-            }
+//Prompt the user questions to populate the README.md
+function promptUser(){
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "projectTitle",
+            message: "What is the project title?",
+        },
+        {
+            type: "input",
+            name: "description",
+            message: "Write a brief description of your project: "
+        },
+        {
+            type: "input",
+            name: "installation",
+            message: "Describe the installation process if any: ",
+        },
+        {
+            type: "input",
+            name: "usage",
+            message: "What is this project usage for?"
+        },
+        {
+            type: "list",
+            name: "license",
+            message: "Chose the appropriate license for this project: ",
+            choices: [
+                "Apache",
+                "Academic",
+                "GNU",
+                "ISC",
+                "MIT",
+                "Mozilla",
+                "Open"
+            ]
+        },
+        {
+            type: "input",
+            name: "contributing",
+            message: "Who are the contributors of this projects?"
+        },
+        {
+            type: "input",
+            name: "tests",
+            message: "Is there a test included?"
+        },
+        {
+            type: "input",
+            name: "questions",
+            message: "What do I do if I have an issue? "
+        },
+        {
+            type: "input",
+            name: "username",
+            message: "Please enter your GitHub username: "
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "Please enter your email: "
         }
-    },
+    ]);
+} 
 
-];
-
-
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
-
-// TODO: Create a function to initialize app
-function init() {}
-
-// Function call to initialize app
-init();
+// Async function using util.promisify 
+  async function init() {
+    try {
+        // Ask user questions and generate responses
+        const answers = await promptUser();
+        const generateContent = generateMarkdown(answers);
+        // Write new README.md to dist directory
+        await writeFileAsync('./dist/README.md', generateContent);
+        console.log('✔️  Successfully wrote to README.md');
+    }   catch(err) {
+        console.log(err);
+    }
+  }
+  
+  init();  
