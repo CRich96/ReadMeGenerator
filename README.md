@@ -38,6 +38,9 @@ THEN I am taken to the corresponding section of the README
 - [Contributing](#contributing)
 - [Questions](#questions)
 
+## Description 
+🎥 The full movie file showing functionality of the application can be found [here](https://youtu.be/rg__IEV_j3E.)  
+
 ## Installation
 💾   
   
